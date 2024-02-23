@@ -10,6 +10,7 @@ int main(){
         std::cin>>i;
     }
     NewtonFractal N(polynomial_coefficients);
+    std::cout<<N.ruletoString()<<'\n';
     N.loadPixels();
     N.makeBMP("Fractal");
     system("Fractal.bmp");

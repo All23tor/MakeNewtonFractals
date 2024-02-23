@@ -53,18 +53,16 @@ class Polynomial{ //Class used to manage polynomials with real coefficients
   
   std::string toString(){ //Returns the conventional way in maths to write a polynomial 
     std::string text = ""; //I tried to make this look good, don't think success was achieved
-    text += rule[0];
+    text += std::to_string(rule[0]);
     for (int i=1;i<rule.size();i++){
       if(rule[i]>0){
-        text+=" + ";
-        text+=rule[i];
-        text+="x^"+i;
+        text+=" +";
+        text+=std::to_string(rule[i]);
+        text+="x^"+std::to_string(i);
       } else if (rule[i]<0) { //This sucks
-        text+=" - ";
-        text+=-rule[i];
-        text+="x^"+i;;
+        text+=std::to_string(rule[i]);
+        text+="x^"+std::to_string(i);
       }
-      
     }
     return text;
   }
@@ -72,7 +70,7 @@ class Polynomial{ //Class used to manage polynomials with real coefficients
   std::complex<float> evaluate(std::complex<float> z){//Evaluates the polynomial at a complex number z
     std::complex<float> ans = 0;
     for (int i=0;i<rule.size();i++){
-      ans += std::pow(z,i) * rule[i];
+      ans += std::pow<float,float>(z,i)*rule[i];
     }
     return ans;
   }

@@ -57,6 +57,10 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
 
     public:
 
+    std::string ruletoString(){
+        return polynomial.toString();
+    }
+
     NewtonFractal(std::vector<float> _rule){ //Initializes everything
         polynomial = Polynomial(_rule);
         polynomial.normalize();
