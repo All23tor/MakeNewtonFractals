@@ -12,6 +12,6 @@ int main(){
     NewtonFractal N(polynomial_coefficients);
     N.loadPixels();
     N.makeBMP("Fractal");
-    system("-o Fractal.bmp");
+    system("Fractal.bmp");
     return 0;
 }
