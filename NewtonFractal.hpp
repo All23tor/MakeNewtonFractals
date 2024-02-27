@@ -1,73 +1,105 @@
 #include <fstream>
 #include <iostream>
+#include <cmath>
 #include "Polynomial.hpp"
 #include "Color.hpp"
 
 const int pixel_width = 1600;
 const int pixel_height = 900;
-const float aspect_ratio = ((float)pixel_height)/pixel_width; //Aspect ratio of output image
-const float xr = 5.0; //Range of values for the x-axis
-const float yr = aspect_ratio * xr; //Calculates range of values for y-axis
-
+const double aspect_ratio = ((double)pixel_height)/pixel_width; //Aspect ratio of output image
+const double xr = 5.0; //Range of values for the x-axis
+const double yr = aspect_ratio * xr; //Calculates range of values for y-axis
 
 const int maxIteration = 120; //Maximum number of Newton iterations per number
-const float tolerance = 0.001; //Minimum proximity to a root necessary for it to be assigned 
+const double invlogmaxIteration = 1/std::log(maxIteration);
+const double tolerance = 0.000001; //Minimum proximity to a root necessary for it to be assigned 
+
 
 class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial;
 
     Polynomial polynomial; 
     Polynomial derivative;
-    std::vector<std::complex<float>> roots; //Here we will store the possibly complex roots of the polynomial
+    std::vector<std::complex<double>> roots; //Here we will store the possibly complex roots of the polynomial
     int number_of_roots;
     std::vector<Color> colors;
 
-    std::vector<float> xs, ys; //We will calculate the numerical coordinates that each pixel represents ahead of time
+    std::vector<double> xs, ys; //We will calculate the numerical coordinates that each pixel represents ahead of time
 
     std::vector<Color> pixels; //Here we store the color in each pixel
 
-    float map(float value, float input_start, float input_end, float output_start, float output_end){ //Simple mapping function
-        float input_range = input_end - input_start;
-        float output_range = output_end - output_start;
+    double map(double value, double input_start, double input_end, double output_start, double output_end){ //Simple mapping function
+        double input_range = input_end - input_start;
+        double output_range = output_end - output_start;
         return (value-input_start)*(output_range/input_range)+output_start;
     }
 
-    Color assignColor(float x, float y){ //This checks which root each point is closest to
-        std::complex<float> z(x,y);
+    char* printableColor(double x, double y){ //This checks which root each point is closest to
+        std::complex<double> z(x,y);
 
-        for (int i=0;i<maxIteration;i++){
+        for (int it=0;it<maxIteration;it++){
             z -= polynomial.evaluate(z)/derivative.evaluate(z);
-            for (int i=0;i<number_of_roots;i++){ //This is reaaaaally slow
-                if (std::norm((z - roots[i])) < tolerance){
-                    return colors[i];
-                }
+            for (int k=0;k<number_of_roots;k++){ //This is reaaaaally slow
+                if (norm(z - roots[k])<tolerance){
+                    return colors[k].scale(1.0-log(it)*invlogmaxIteration).toChars();
+                }   
             }
         }
 
-        return Color();
+        return Color().toChars();
     }
     
     std::vector<Color> evenlyspacedColors(int n){ //Picks n colors that are evenly spaced by hue
         std::vector<Color> resulting_colors;
         int space = 1530/n; //My hue space goes from 0 to 1529 because I'm pretty sure my implementation is awful
         for (int i=0;i<1530;i+=space){
-            resulting_colors.push_back(Color(i));; //Still works though
+            resulting_colors.push_back(Color(i)); //Still works though
         }
         return resulting_colors;
     }
 
+    char* toChars(int number){
+        char* ans = new char[4];
+        int count=0;
+        while(number>0){
+            ans[count]=number%256;
+            number/=256;
+            count++;
+        }
+        while(count<4){
+            ans[count]=0;
+            count++;
+        }
+        return ans;
+    }
+
+    char* toChars(short number){
+        char* ans = new char[2];
+        int count=0;
+        while(number>0){
+            ans[count]=number%256;
+            number/=256;
+            count++;
+        }
+        while(count<4){
+            ans[count]=0;
+            count++;
+        }
+        return ans;
+    }
+
     public:
 
-    std::string ruletoString(){
+    std::string toString(){
         return polynomial.toString();
     }
 
-    NewtonFractal(std::vector<float> _rule){ //Initializes everything
-        polynomial = Polynomial(_rule);
-        polynomial.normalize();
-        derivative = polynomial.derivative();
-        roots = polynomial.findroots();
+    NewtonFractal(std::vector<double> _coefficients){ //Initializes everything
+        polynomial = Polynomial(_coefficients); //Sets polynomial
+        polynomial.normalize(); 
+        derivative = polynomial.derivative(); //Stores the derivative
+        roots = polynomial.findroots(); //Finds roots
         number_of_roots = roots.size();
-        colors = evenlyspacedColors(number_of_roots);
+        colors = evenlyspacedColors(number_of_roots); //Makes colors according to the number of roots
         for(int i=0;i<pixel_width;i++){ //This translates pixels to x-axis
             xs.push_back(map(i,0,pixel_width,-xr,xr));
         }
@@ -78,26 +110,53 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
         pixels = std::vector<Color>(0);
     }
 
-    void loadPixels(){ //Go through each pixel
+    void makeBMP(std::string filename){ //Store image in a file
+        std::ofstream fout(filename + ".bmp", std::ofstream::binary);
+
+        const int sizeofDIB = 40; //Size of the DIB header we use             
+        const int sizeofheader = 14 + sizeofDIB; //Add the 14 mandatory bytes from BMP header
+        const int sizeofbitmap = 4*pixel_width*pixel_height + sizeofheader; //3 bytes per pixel
+
+        const int horizontalresolution = 4724;
+        const int verticalresolution = 4724;
+
+        const char* fourzeroes = "\0\0\0\0";
+        const char* twozeroes = "\0\0";
+
+        //BMP header
+
+        fout.write("BM",2); //We always start with BM
+        fout.write(toChars(sizeofbitmap),4); //Specify the size of the bitmap
+        fout.write(twozeroes,2); //Always two zeroes
+        fout.write(twozeroes,2); //Always two zeroes
+        fout.write(toChars(sizeofheader),4); //Specify size of header
+
+        //DIB header
+
+        fout.write(toChars(sizeofDIB),4); //Size of this DIB format
+        fout.write(toChars(pixel_width),4);
+        fout.write(toChars(pixel_height),4);
+
+        fout.write("\1\0",2); //Number of color planes (Always one)
+        fout.write(std::string{24,0}.data(),2); //Bits per pixel, we use  simple 3 byte RGB colors
+
+        fout.write(fourzeroes,4); //No compression used
+        fout.write(fourzeroes,4); //We don't specify the imge size cause we don't use compression
+        fout.write(toChars(horizontalresolution),4);
+        fout.write(toChars(verticalresolution),4);
+        fout.write(fourzeroes,4); //I dont know what this does tbh
+        fout.write(fourzeroes,4); //Nor do I know what this does
+
+        pixels.clear();
         for (int j=0;j<pixel_height;j++){
-            float zy = ys[j];
+            double zy = ys[j];
             for (int i=0;i<pixel_width;i++){
-                float zx = xs[i];
-                pixels.push_back(assignColor(zx,zy));
+                double zx = xs[i];
+                fout.write(printableColor(zx,zy),3);
             }
         }
         std::cout<<"Pixels done!"<<'\n';
-    }
 
-    void makeBMP(std::string filename){ //Store image in a file
-        std::ofstream fout(filename + ".bmp");
-        const unsigned char start[] = {66,77,54,235,65,0,0,0,0,0,54,0,0,0,40,0,0,0,64,6,0,0,132,3,0,0,1,0,24,0,0,0,0,0,0,235,65,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // I dont know how BMP works I just made one in Paint and copied it's initial data in here
-        for (auto c: start){
-            fout<<c;
-        }
-        for (auto i: pixels){
-            fout<<i.b<<i.g<<i.r; // BGR instead of RGB because BMP wirtes things backwards I think
-        }
-        std::cout<<"Image done!"<<'\n';
+        fout.close();
     }
 };

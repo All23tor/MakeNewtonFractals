@@ -5,19 +5,19 @@ struct Color{
     unsigned char g;
     unsigned char b;
 
-    Color(){
+    Color(){ //defaults to black
         r=0;
         g=0;
         b=0;
     }
 
-    Color(unsigned char _r, unsigned char _g, unsigned char _b){
+    Color(unsigned char _r, unsigned char _g, unsigned char _b){ //Initializes RGB
         r=_r;
         g=_g;
         b=_b;
     }
 
-    Color(int hue){ //Pick by hue [0,1530[ cuz i think it works nicely
+    Color(int hue){ //Pick by hue [0,1530[ because I'm too lazy to normalize it
         if (hue<256){
             r=255;
             g=hue;
@@ -51,5 +51,18 @@ struct Color{
         r=255;
         g=0;
         b=1530-hue; //Looks horrible though
+    }
+
+    Color scale(double value){ //Scales color by decimal value
+        return Color(r*value,g*value,b*value);
+    }
+
+    char* toChars(){
+        char* ans = new char[3];
+        ans[0]=b;
+        ans[1]=g;
+        ans[2]=r;
+
+        return ans;
     }
 };
