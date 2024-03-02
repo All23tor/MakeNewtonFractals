@@ -11,7 +11,9 @@ int main(){
     }
     NewtonFractal N(polynomial_coefficients);
     std::cout<<N.toString()<<'\n';
-    N.makeBMP("Fractal");
-    system("Fractal.bmp");
+    std::string name;
+    std::cout<<"Insert file name: ";
+    std::cin>> name;
+    N.makeBMP("BMPs/" + name);
     return 0;
 }

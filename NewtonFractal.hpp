@@ -7,12 +7,13 @@
 const int pixel_width = 1600;
 const int pixel_height = 900;
 const double aspect_ratio = ((double)pixel_height)/pixel_width; //Aspect ratio of output image
-const double xr = 5.0; //Range of values for the x-axis
+const double xr = 1.0; //Range of values for the x-axis
 const double yr = aspect_ratio * xr; //Calculates range of values for y-axis
+const double eccentricity = 0.3; //Measures how quickly colors turn to black
 
-const int maxIteration = 120; //Maximum number of Newton iterations per number
-const double invlogmaxIteration = 1/std::log(maxIteration);
-const double tolerance = 0.000001; //Minimum proximity to a root necessary for it to be assigned 
+const int maxIteration = 200; //Maximum number of Newton iterations per number
+const float invmaxItEx = 1.0/(maxIteration*eccentricity);
+const double tolerance = 1.0E-6; //Minimum proximity to a root necessary for it to be assigned 
 
 
 class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial;
@@ -40,7 +41,7 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
             z -= polynomial.evaluate(z)/derivative.evaluate(z);
             for (int k=0;k<number_of_roots;k++){ //This is reaaaaally slow
                 if (norm(z - roots[k])<tolerance){
-                    return colors[k].scale(1.0-log(it)*invlogmaxIteration).toChars();
+                    return colors[k].scale((1.0+invmaxItEx)/(it*eccentricity+1)-invmaxItEx).toChars();
                 }   
             }
         }
@@ -99,7 +100,22 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
         derivative = polynomial.derivative(); //Stores the derivative
         roots = polynomial.findroots(); //Finds roots
         number_of_roots = roots.size();
-        colors = evenlyspacedColors(number_of_roots); //Makes colors according to the number of roots
+        char isManual;
+        std::cout<<"Insert colors manually? (Y/N): ";
+        std::cin>>isManual; //If we want
+        if (isManual=='Y'){
+            colors = std::vector<Color>(number_of_roots);
+            std::cout<<"Input colors: ";
+            for (Color& color: colors){
+                std::string hexColor;
+                unsigned char r,g,b;
+                std::cin >> hexColor;
+                sscanf(hexColor.c_str(), "%02hhx%02hhx%02hhx", &r, &g, &b);
+                color = Color(r,g,b);
+            }
+        }else{
+            colors = evenlyspacedColors(number_of_roots); //Makes colors according to the number of roots
+        }
         for(int i=0;i<pixel_width;i++){ //This translates pixels to x-axis
             xs.push_back(map(i,0,pixel_width,-xr,xr));
         }
