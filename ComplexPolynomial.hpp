@@ -53,10 +53,11 @@ class ComplexPolynomial{ //Class used to manage polynomials with complex coeffic
   
   std::string to_String(){ //Returns the conventional way in maths to write a polynomial 
     std::stringstream text; //I tried to make this look good, don't think success was achieved
-    text<<coefficients[0]<<" + ";
-    for (int i=1;i<degree;i++){
+    for (int i=0;i<degree;i++){
       text<<coefficients[i]<<"x^"<<i<<" + ";
     }
+    text<<coefficients[degree]<<"x^"<<degree;
+
     return text.str();
   }
   
