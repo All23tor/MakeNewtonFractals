@@ -1,16 +1,18 @@
 #include <iostream>
-#include "NewtonFractal.hpp"
+#include "ComplexNewtonFractal.hpp"
 
 int main(){
     std::cout<<"Make a Newton Fractal!"<<'\n'<<"Enter the polynomials degree: ";
     int m; std::cin>>m; m++;
+
     std::cout<<"Now enter each term's coefficients (from the constant to the leading): ";
-    std::vector<double> polynomial_coefficients(m,0);
-    for (double& i: polynomial_coefficients){
+    std::vector<std::complex<double>> polynomial_coefficients(m,0);
+    for (std::complex<double>& i: polynomial_coefficients){
         std::cin>>i;
     }
+
     NewtonFractal N(polynomial_coefficients);
-    std::cout<<N.toString()<<'\n';
+    std::cout<<N.to_String()<<'\n';
     std::string name;
     std::cout<<"Insert file name: ";
     std::cin>> name;
