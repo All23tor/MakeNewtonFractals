@@ -7,7 +7,7 @@
 const int pixel_width = 1600;
 const int pixel_height = 900;
 const double aspect_ratio = ((double)pixel_height)/pixel_width; //Aspect ratio of output image
-const double xr = 1.0; //Range of values for the x-axis
+const double xr = 5.0; //Range of values for the x-axis
 const double yr = aspect_ratio * xr; //Calculates range of values for y-axis
 const double eccentricity = 0.3; //Measures how quickly colors turn to black
 
