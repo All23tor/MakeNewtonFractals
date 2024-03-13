@@ -11,7 +11,7 @@ The main code uses three header files which define the behaviour of polynomials,
 ### Polynomial.hpp
 
 Polynomials are represented by a list of their coefficients starting with the constant coefficient and ending with the leading coefficient. 
-The polynomial is evaluated using the Horner method and its roots are found using the Durand-Kerner algorithm, which by dufault uses 20 iterations.
+The polynomial is evaluated using the Horner method and its roots are found using the Durand-Kerner algorithm, which by dufault uses 60 iterations.
 Polynomials also support differentiation, which is done by aplying the power ruleto each term.
 
 ### Color.hpp
@@ -34,12 +34,14 @@ The main.cpp file when compiled makes a simple implementation of the above heade
 
 ### Input
 
-The first value it will ask for is the degree of the polynomial, then it will as for the list of the coefficients (real numebers).
+The first value it will ask for is the degree of the polynomial, then it will as for the list of the coefficients.
+Real number coefficients can be formatted as they would normally be, however complex number coefficients must be formatted like this: (Real(z),Imag(z))
 This is enough information to calculate the roots of this polynomial. When the roots are found it will inform this on the console.
 Then it asks you if you want to choose the colors manually, if so, one must enter as many colors as there are solutions to the polynomial.
 Once colors are assignated it will inform this on the console.
 Then the common mathematical representation of the polynomial is printed.
 Finally it will ask the name of the .bmp file that it is going to generate.
 
-![image](https://github.com/All23tor/MakeNewtonFractals/assets/158845088/383d7c6e-6cc7-408a-9270-052e3e262c95)
+![Screenshot 2024-03-12 235520](https://github.com/All23tor/MakeNewtonFractals/assets/158845088/4b6f92c6-5a43-4aaf-b1f6-1d0b2099315a)
 
+![Complex4thDegree2](https://github.com/All23tor/MakeNewtonFractals/assets/158845088/20423e7c-73ae-41cc-9112-47d74c51b4ce)
