@@ -15,11 +15,10 @@ const int maxIteration = 200; //Maximum number of Newton iterations per number
 const float invmaxItEx = 1.0/(maxIteration*eccentricity);
 const double tolerance = 1.0E-6; //Minimum proximity to a root necessary for it to be assigned 
 
-
 class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial;
 
-    Polynomial polynomial; 
-    Polynomial derivative;
+    ComplexPolynomial polynomial; 
+    ComplexPolynomial derivative;
     std::vector<std::complex<double>> roots; //Here we will store the possibly complex roots of the polynomial
     int number_of_roots;
     std::vector<Color> colors;
@@ -34,7 +33,7 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
         return (value-input_start)*(output_range/input_range)+output_start;
     }
 
-    char* printableColor(double x, double y){ //This checks which root each point is closest to
+    std::shared_ptr<unsigned char[]> printableColor(double x, double y){ //This checks which root each point is closest to
         std::complex<double> z(x,y);
 
         for (int it=0;it<maxIteration;it++){
@@ -58,8 +57,8 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
         return resulting_colors;
     }
 
-    char* toChars(int number){
-        char* ans = new char[4];
+    char * toChars(int number){ //Used for creating .bmp file
+        std::shared_ptr<char[]> ans(new char[4]);
         int count=0;
         while(number>0){
             ans[count]=number%256;
@@ -70,11 +69,11 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
             ans[count]=0;
             count++;
         }
-        return ans;
+        return ans.get();
     }
 
-    char* toChars(short number){
-        char* ans = new char[2];
+    char * toChars(short number){ //Used for creating .bmp file
+        std::shared_ptr<char[]> ans(new char[2]);
         int count=0;
         while(number>0){
             ans[count]=number%256;
@@ -85,24 +84,29 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
             ans[count]=0;
             count++;
         }
-        return ans;
+        return ans.get();
     }
 
     public:
 
-    std::string toString(){
-        return polynomial.toString();
+    std::string to_String(){
+        return polynomial.to_String();
     }
 
-    NewtonFractal(std::vector<double> _coefficients){ //Initializes everything
-        polynomial = Polynomial(_coefficients); //Sets polynomial
+    NewtonFractal(std::vector<std::complex<double>> _coefficients){ //Initializes everything
+        polynomial = ComplexPolynomial(_coefficients); //Sets polynomial
         polynomial.normalize(); 
         derivative = polynomial.derivative(); //Stores the derivative
         roots = polynomial.findroots(); //Finds roots
+        std::cout<<"Roots: ";
+        for (std::complex<double> root : roots){
+            std::cout<<root<<' ';
+        }
+        std::cout<<'\n';
         number_of_roots = roots.size();
         char isManual;
         std::cout<<"Insert colors manually? (Y/N): ";
-        std::cin>>isManual; //If we want
+        std::cin>>isManual; //If we want to
         if (isManual=='Y'){
             colors = std::vector<Color>(number_of_roots);
             std::cout<<"Input colors: ";
@@ -154,7 +158,7 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
         fout.write(toChars(pixel_height),4);
 
         fout.write("\1\0",2); //Number of color planes (Always one)
-        fout.write(std::string{24,0}.data(),2); //Bits per pixel, we use  simple 3 byte RGB colors
+        fout.write(std::string{32,0}.data(),2); //Bits per pixel, we use RGBA so 4 bytes per pixel
 
         fout.write(fourzeroes,4); //No compression used
         fout.write(fourzeroes,4); //We don't specify the imge size cause we don't use compression
@@ -168,7 +172,7 @@ class NewtonFractal{ //Builds a Newton Fractal pixel by pixel given a polynomial
             double zy = ys[j];
             for (int i=0;i<pixel_width;i++){
                 double zx = xs[i];
-                fout.write(printableColor(zx,zy),3);
+                fout.write(reinterpret_cast<char *>(printableColor(zx,zy).get()),4);
             }
         }
         std::cout<<"Pixels done!"<<'\n';

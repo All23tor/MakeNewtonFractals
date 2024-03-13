@@ -2,13 +2,13 @@
 #include <string>
 #include <complex>
 
-class Polynomial{ //Class used to manage polynomials with real coefficients
+class ComplexPolynomial{ //Class used to manage polynomials with complex coefficients
 
-  std::vector<double> coefficients; //Here the polynomial coefficients are stored
+  std::vector<std::complex<double>> coefficients; //Here the polynomial coefficients are stored
   int degree; //The degree of the polynomial
 
   void simplify(){ //Used to remove all zero terms at the end of the polynomials representation
-    if (coefficients[degree]==0){
+    if (coefficients[degree]==std::complex<double>(0,0)){
         coefficients.pop_back();
         degree--;
         simplify();
@@ -33,16 +33,16 @@ class Polynomial{ //Class used to manage polynomials with real coefficients
 
   public:
   
-  Polynomial(){ //Default constructor makes the 0 constant polynomial, not really used
-    coefficients = std::vector<double>(1,0);
+  ComplexPolynomial(){ //Default constructor makes the 0 constant polynomial, not really used
+    coefficients = std::vector<std::complex<double>>(1,0);
     degree=0;
   }
   
-  Polynomial(std::vector<double> poly){ //Useful constructor
+  ComplexPolynomial(std::vector<std::complex<double>> poly){ //Useful constructor
     coefficients = poly;
     degree= poly.size()-1;
   }
-
+  
   void normalize(){ //Normalizes the polynomial so the leading coefficient is 1
     simplify();
     for (int i=0;i<degree;i++){
@@ -50,21 +50,15 @@ class Polynomial{ //Class used to manage polynomials with real coefficients
     }
     coefficients[degree]=1;
   }
-  
-  std::string toString(){ //Returns the conventional way in maths to write a polynomial 
-    std::string text = ""; //I tried to make this look good, don't think success was achieved
-    text += std::to_string(coefficients[0]);
-    for (int i=1;i<coefficients.size();i++){
-      if(coefficients[i]>0){
-        text+=" +";
-        text+=std::to_string(coefficients[i]);
-        text+="x^"+std::to_string(i);
-      } else if (coefficients[i]<0) { //This sucks
-        text+=std::to_string(coefficients[i]);
-        text+="x^"+std::to_string(i);
-      }
+
+  std::string to_String(){ //Returns the conventional way in maths to write a polynomial 
+    std::stringstream text; //I tried to make this look good, don't think success was achieved
+    for (int i=0;i<degree;i++){
+      text<<coefficients[i]<<"x^"<<i<<" + ";
     }
-    return text;
+    text<<coefficients[degree]<<"x^"<<degree;
+
+    return text.str();
   }
   
   std::complex<double> evaluate(std::complex<double> z){//Evaluates the polynomial at a complex number z
@@ -76,12 +70,12 @@ class Polynomial{ //Class used to manage polynomials with real coefficients
     return ans;
   }
   
-  Polynomial derivative(){ //The derivative of a polynomial
-    std::vector<double> newrule(degree);
+  ComplexPolynomial derivative(){ //The derivative of a polynomial
+    std::vector<std::complex<double>> newrule(degree);
     for (int i=0;i<degree;i++){
-      newrule[i]=coefficients[i+1]*(i+1);
+      newrule[i]=coefficients[i+1]*(i+1.0);
     }
-    return Polynomial(newrule);
+    return ComplexPolynomial(newrule);
   }
   
   std::vector<std::complex<double>> findroots(){ //This just runs the previous algorithm a bunch of times so it's accurate
@@ -90,10 +84,9 @@ class Polynomial{ //Class used to manage polynomials with real coefficients
     for (int i=0;i<degree;i++){
       roots[i]=std::pow(r_0,i);
     }
-    for (int i=0;i<20;i++){ //Magic number 20 chosen because it seemed to be enough, not sure
+    for (int i=0;i<60;i++){ //Magic number 60 chosen because it seemed to be enough, not sure
       roots = durandkernerStep(roots);
     }
-    std::cout<<"Roots done!"<<'\n';
     return roots;
   }
 };
