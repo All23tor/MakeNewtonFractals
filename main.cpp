@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ComplexNewtonFractal.hpp"
+#include "NewtonFractal.hpp"
 
 int main(){
     std::cout<<"Make a Newton Fractal!"<<'\n'<<"Enter the polynomials degree: ";

@@ -1,68 +1,73 @@
 #include <string>
+#include <memory>
 
 struct Color{
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
+    std::shared_ptr<unsigned char[]> RGBA;
 
     Color(){ //defaults to black
-        r=0;
-        g=0;
-        b=0;
+        RGBA = std::shared_ptr<unsigned char[]>(new unsigned char[4]);
+        RGBA[0]=0;
+        RGBA[1]=0;
+        RGBA[2]=0;
+        RGBA[3]=0;
     }
 
     Color(unsigned char _r, unsigned char _g, unsigned char _b){ //Initializes RGB
-        r=_r;
-        g=_g;
-        b=_b;
+        RGBA = std::shared_ptr<unsigned char[]>(new unsigned char[4]);
+        RGBA[0]=_r;
+        RGBA[1]=_g;
+        RGBA[2]=_b;
+        RGBA[3]=255;
     }
 
     Color(int hue){ //Pick by hue [0,1530[ because I'm too lazy to normalize it
+        RGBA = std::shared_ptr<unsigned char[]>(new unsigned char[4]);
+        RGBA[3]=255;
         if (hue<256){
-            r=255;
-            g=hue;
-            b=0;
+            RGBA[0]=255;
+            RGBA[1]=hue;
+            RGBA[2]=0;
             return;
         }
         if (hue<511){
-            r=510-hue;
-            g=255;
-            b=0;
+            RGBA[0]=510-hue;
+            RGBA[1]=255;
+            RGBA[2]=0;
             return;
         }
         if (hue<766){;
-            r=0;
-            g=255;
-            b=hue-510;
+            RGBA[0]=0;
+            RGBA[1]=255;
+            RGBA[2]=hue-510;
             return;
         }
         if (hue<1021){
-            r=0;
-            g=1020-hue;
-            b=255;
+            RGBA[0]=0;
+            RGBA[1]=1020-hue;
+            RGBA[2]=255;
             return;
         }
         if (hue<1276){
-            r=hue-1020;
-            g=0;
-            b=255;
+            RGBA[0]=hue-1020;
+            RGBA[1]=0;
+            RGBA[2]=255;
             return;
         }
-        r=255;
-        g=0;
-        b=1530-hue; //Looks horrible though
+
+        RGBA[0]=255;
+        RGBA[1]=0;
+        RGBA[2]=1530-hue;
     }
 
     Color scale(double value){ //Scales color by decimal value
-        return Color(r*value,g*value,b*value);
+        return Color(RGBA[0]*value,RGBA[1]*value,RGBA[2]*value);
     }
 
-    char* toChars(){
-        char* ans = new char[3];
-        ans[0]=b;
-        ans[1]=g;
-        ans[2]=r;
+    void setAlpha(unsigned char _a){
+        RGBA[3] = _a;
+    }
 
-        return ans;
+    std::shared_ptr<unsigned char[]> toChars(){
+        return RGBA;
     }
 };
