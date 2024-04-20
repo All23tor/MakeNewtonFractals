@@ -1,73 +1,73 @@
-#include <string>
-#include <memory>
-
 struct Color{
-    std::shared_ptr<unsigned char[]> RGBA;
+    unsigned char R;
+    unsigned char G;
+    unsigned char B;
 
-    Color(){ //defaults to black
-        RGBA = std::shared_ptr<unsigned char[]>(new unsigned char[4]);
-        RGBA[0]=0;
-        RGBA[1]=0;
-        RGBA[2]=0;
-        RGBA[3]=0;
+    Color(){ // Defaults to black
+        R = 0;
+        G = 0;
+        B = 0;
     }
 
-    Color(unsigned char _r, unsigned char _g, unsigned char _b){ //Initializes RGB
-        RGBA = std::shared_ptr<unsigned char[]>(new unsigned char[4]);
-        RGBA[0]=_r;
-        RGBA[1]=_g;
-        RGBA[2]=_b;
-        RGBA[3]=255;
+    Color(unsigned char r, unsigned char g, unsigned char b){ // Initializes RGB values (0-255)
+        R = r;
+        G = g;
+        B = b;
     }
 
-    Color(int hue){ //Pick by hue [0,1530[ because I'm too lazy to normalize it
-        RGBA = std::shared_ptr<unsigned char[]>(new unsigned char[4]);
-        RGBA[3]=255;
-        if (hue<256){
-            RGBA[0]=255;
-            RGBA[1]=hue;
-            RGBA[2]=0;
-            return;
-        }
-        if (hue<511){
-            RGBA[0]=510-hue;
-            RGBA[1]=255;
-            RGBA[2]=0;
-            return;
-        }
-        if (hue<766){;
-            RGBA[0]=0;
-            RGBA[1]=255;
-            RGBA[2]=hue-510;
-            return;
-        }
-        if (hue<1021){
-            RGBA[0]=0;
-            RGBA[1]=1020-hue;
-            RGBA[2]=255;
-            return;
-        }
-        if (hue<1276){
-            RGBA[0]=hue-1020;
-            RGBA[1]=0;
-            RGBA[2]=255;
-            return;
-        }
+    Color(double hue){ //Pick by hue [0, 360)
+        unsigned char x = 255 * (1 - std::abs(std::fmod(hue/60, 2) - 1));
+        switch (int(hue) / 60) {
+            case 0:
+                R = 255;
+                G = x;
+                B = 0;
+            break;
+            
+            case 1:
+                R = x;
+                G = 255;
+                B = 0;
+            break;
+            
+            case 2:
+                R = 0;
+                G = 255;
+                B = x;
+            break;
 
-        RGBA[0]=255;
-        RGBA[1]=0;
-        RGBA[2]=1530-hue;
+            case 3:
+                R = 0;
+                G = x;
+                B = 255;
+            break;
+
+            case 4:
+                R = x;
+                G = 0;
+                B = 255;
+            break;
+
+            case 5:
+                R = 255;
+                G = 0;
+                B = x;
+            break;
+            
+            default:
+                R = 0;
+                G = 0;
+                B = 0;
+            break;
+        }
     }
 
-    Color scale(double value){ //Scales color by decimal value
-        return Color(RGBA[0]*value,RGBA[1]*value,RGBA[2]*value);
+    Color scale(double value){ // Returns copy of color scaled by decimal value
+        return Color(R*value,G*value,B*value);
     }
 
-    void setAlpha(unsigned char _a){
-        RGBA[3] = _a;
-    }
-
-    std::shared_ptr<unsigned char[]> toChars(){
-        return RGBA;
+    unsigned int toUInt(){ // Returns the pointer that the RGBA stores
+        unsigned int color = R + ((unsigned int)G << 8) + ((unsigned int)B << 16);
+        return color;
     }
 };

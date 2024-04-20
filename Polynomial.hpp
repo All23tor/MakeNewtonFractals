@@ -1,5 +1,4 @@
 #include <vector>
-#include <string>
 #include <complex>
 
 class ComplexPolynomial{ //Class used to manage polynomials with complex coefficients
@@ -61,9 +60,9 @@ class ComplexPolynomial{ //Class used to manage polynomials with complex coeffic
     return text.str();
   }
   
-  std::complex<double> evaluate(std::complex<double> z){//Evaluates the polynomial at a complex number z
+  std::complex<double> evaluate(std::complex<double> z){ //Evaluates the polynomial at a complex number z
     std::complex<double> ans = 0;
-    for (int i=degree;i>=0;i--){
+    for (int i=degree;i>=0;i--){ // Horner's method
       ans *= z;
       ans += coefficients[i];
     }
@@ -73,16 +72,16 @@ class ComplexPolynomial{ //Class used to manage polynomials with complex coeffic
   ComplexPolynomial derivative(){ //The derivative of a polynomial
     std::vector<std::complex<double>> newrule(degree);
     for (int i=0;i<degree;i++){
-      newrule[i]=coefficients[i+1]*(i+1.0);
+      newrule[i]=coefficients[i+1]*(i+1.0); // Chain rule
     }
     return ComplexPolynomial(newrule);
   }
   
   std::vector<std::complex<double>> findroots(){ //This just runs the previous algorithm a bunch of times so it's accurate
-    std::complex<double> r_0 = std::complex<double>(0.4,0.9); //Initial value for roots, chosen arbitrairly
+    std::complex<double> r_0 = std::complex<double>(0.4,0.9); //Initial value for roots, chosen arbitrairly (must not be real, nor a root of 1)
     std::vector<std::complex<double>> roots(degree);
     for (int i=0;i<degree;i++){
-      roots[i]=std::pow(r_0,i);
+      roots[i]=std::pow(r_0,i); // Make initial guess for each root different (and not too close to each other)
     }
     for (int i=0;i<60;i++){ //Magic number 60 chosen because it seemed to be enough, not sure
       roots = durandkernerStep(roots);
