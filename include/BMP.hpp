@@ -1,23 +1,21 @@
 #include "Color.hpp"
-#include <cstdio>
+#include <fstream>
+#include <bit>
+#include <array>
 
 class BMP {
-  static constexpr unsigned int size_of_header = 14;
-  static constexpr unsigned int size_of_dib = 40;
-  static constexpr unsigned int offset = size_of_dib + size_of_header;
-  static constexpr unsigned int size_of_bmp = 70;
+private:
+  std::ofstream fout;
+  const signed int pixel_width;
+  const signed int pixel_height;
 
-  static constexpr unsigned short bytes_per_pixel = 3;
-  static constexpr unsigned short bits_per_pixel = bytes_per_pixel * 8;
-
-  static constexpr unsigned int compression_method = 0;
-  static constexpr signed int horizontal_resolution = 2835;
-  static constexpr signed int vertical_resolution = 2835;
-  FILE *fout;
-  const signed int pixel_width, pixel_height;
+  template<typename T>
+  void writeBytes(T value) {
+    auto bytes = std::bit_cast<std::array<char, sizeof(T)>>(value);
+    fout.write(bytes.data(), sizeof(T));
+  }
 
 public:
-  BMP(const char *name, int width, int height);
-  ~BMP();
+  BMP(const std::string& name, int width, int height);
   void writeColor(Color);
 };

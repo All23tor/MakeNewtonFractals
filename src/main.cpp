@@ -16,7 +16,7 @@ int main() {
   }
 
   NewtonFractal N(polynomial_coefficients);
-  std::cout << N.to_String() << '\n';
+  std::cout << N.getPolynomialToString() << '\n';
   std::string name;
   std::cout << "Insert file name: ";
   std::cin >> name;

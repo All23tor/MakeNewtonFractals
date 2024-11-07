@@ -1,45 +1,49 @@
 #include "BMP.hpp"
+#include <cstdint>
 
-BMP::BMP(const char *name, int width, int height)
-    : pixel_width{width}, pixel_height{height} {
-  fout = fopen(name, "wb");
+BMP::BMP(const std::string& name, int width, int height)
+  : fout(name, std::ios::binary), pixel_width(width), pixel_height(height) {
 
-  const unsigned int size_data = bytes_per_pixel * width * height;
+  static constexpr const char* signature = "BM";
+  static constexpr u_int32_t size_of_header = 14;
+  static constexpr u_int32_t size_of_dib = 40;
+  static constexpr u_int32_t offset = size_of_dib + size_of_header;
+  static constexpr u_int16_t bytes_per_pixel = 3;
+  constexpr u_int16_t number_of_color_planes = 1;
+  static constexpr u_int16_t bits_per_pixel = bytes_per_pixel * 8;
+  static constexpr u_int32_t compression_method = 0;
+  static constexpr int32_t horizontal_resolution = 2835;
+  static constexpr int32_t vertical_resolution = 2835;
+  static constexpr u_int32_t number_colors_in_palette = 0; //0 defaults to 2^n
+  static constexpr u_int32_t number_important_colors = 0;
+  static constexpr u_int16_t unused_bytes = 0;
 
+  const u_int32_t size_data = bytes_per_pixel * width * height;
+  const u_int32_t size_of_bmp = size_data + offset;
   // Header
 
-  std::fwrite("BM", sizeof(char), 2, fout);        // Signature
-  std::fwrite(&size_of_bmp, sizeof(int), 1, fout); // Size of bitmap in bytes
-  std::fwrite("\0\0\0\0", sizeof(short), 2, fout); // Unused bytes
-  std::fwrite(&offset, sizeof(int), 1, fout);      // Size of bitmap in bytes
+  fout.write(signature, 2);
+  writeBytes(size_of_bmp);
+  writeBytes(unused_bytes);
+  writeBytes(unused_bytes);
+  writeBytes(offset);
 
   // DIB header
-
-  std::fwrite(&size_of_dib, sizeof(int), 1,
-              fout);                          // Size of DIB header in bytes
-  std::fwrite(&width, sizeof(int), 1, fout);  // Bitmap width (signed)
-  std::fwrite(&height, sizeof(int), 1, fout); // Bitmap height (signed)
-  std::fwrite("\1\0", sizeof(char), 2,
-              fout); // Number of color planes (must be 1)
-  std::fwrite(&bits_per_pixel, sizeof(short), 1,
-              fout); // Number of bits per pixel
-  std::fwrite(&compression_method, sizeof(int), 1,
-              fout);                             // Compression method utilized
-  std::fwrite(&size_data, sizeof(int), 1, fout); // Size of raw bitmap data
-  std::fwrite(&horizontal_resolution, sizeof(int), 1,
-              fout); // Pixel per meter horizontal resolution (signed)
-  std::fwrite(&vertical_resolution, sizeof(int), 1,
-              fout); // Pixel per meter vertical resolution (signed)
-  std::fwrite("\0\0\0\0", sizeof(int), 1,
-              fout); // Number of colors in color palette, 0 defaults to 2^n
-  std::fwrite("\0\0\0\0", sizeof(int), 1,
-              fout); // Number of important colors????
+  writeBytes(size_of_dib);
+  writeBytes(width);
+  writeBytes(height);
+  writeBytes(number_of_color_planes);
+  writeBytes(bits_per_pixel);         
+  writeBytes(compression_method);
+  writeBytes(size_data);
+  writeBytes(horizontal_resolution);
+  writeBytes(vertical_resolution);
+  writeBytes(number_colors_in_palette);
+  writeBytes(number_important_colors);      
 }
 
-BMP::~BMP() { fclose(fout); }
-
 void BMP::writeColor(Color x) {
-  std::fwrite(&x.R, sizeof(char), 1, fout);
-  std::fwrite(&x.G, sizeof(char), 1, fout);
-  std::fwrite(&x.B, sizeof(char), 1, fout);
+  fout.put(x.R);
+  fout.put(x.G);
+  fout.put(x.B);
 }
