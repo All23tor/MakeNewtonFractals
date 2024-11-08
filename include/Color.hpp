@@ -3,10 +3,7 @@ struct Color {
   unsigned char G;
   unsigned char B;
 
-  Color(); // Defaults to black
-  Color(unsigned char r, unsigned char g,
-        unsigned char b);    // Initializes RGB values (0-255)
+  Color(unsigned char r = 0, unsigned char g = 0, unsigned char b = 0);
   Color(double hue);         // Pick by hue [0, 360)
-  Color scale(double value); // Returns copy of color scaled by decimal value
-  unsigned int toUInt();     // Returns the pointer that the RGBA stores
+  Color scale(double value);
 };
