@@ -8,6 +8,7 @@ set(SOURCES
   ./src/Color.cpp
   ./src/BMP.cpp
   ./src/Polynomial.cpp
+  ./src/NewtonFractal.cpp
   ./src/main.cpp
 )
 

@@ -9,8 +9,8 @@ void ComplexPolynomial::simplify() {
   }
 }
 
-Polynomial ComplexPolynomial::durandkernerStep(Polynomial roots) {
-  Polynomial newroots(degree);
+ComplexVector ComplexPolynomial::durandkernerStep(ComplexVector roots) {
+  ComplexVector newroots(degree);
   for (int index = 0; index < degree;
        index++) { // All of the roots must be calculated at once, i think
     std::complex<double> currentvalue = roots[index];
@@ -25,14 +25,17 @@ Polynomial ComplexPolynomial::durandkernerStep(Polynomial roots) {
   }
   return newroots;
 }
-ComplexPolynomial::ComplexPolynomial() { // Zero Polynomial
-  coefficients = Polynomial(1, 0);
+
+// Zero Polynomial
+ComplexPolynomial::ComplexPolynomial() { 
+  coefficients = ComplexVector(1, 0);
   degree = 0;
 }
 
-ComplexPolynomial::ComplexPolynomial(Polynomial poly) {
+ComplexPolynomial::ComplexPolynomial(ComplexVector poly, bool normalize) {
   coefficients = poly;
   degree = poly.size() - 1;
+  if (normalize) this->normalize();
 }
 
 void ComplexPolynomial::normalize() {
@@ -62,16 +65,16 @@ std::complex<double> ComplexPolynomial::evaluate(std::complex<double> z) {
 }
 
 ComplexPolynomial ComplexPolynomial::derivative() {
-  Polynomial newrule(degree);
+  ComplexVector newrule(degree);
   for (int i = 0; i < degree; i++) {
     newrule[i] = coefficients[i + 1] * (i + 1.0); // Chain rule
   }
   return ComplexPolynomial(newrule);
 }
 
-Polynomial ComplexPolynomial::findroots() {
+ComplexVector ComplexPolynomial::findroots() {
   std::complex<double> r_0 = std::complex<double>(0.4, 0.9);
-  Polynomial roots(degree);
+  ComplexVector roots(degree);
   for (int i = 0; i < degree; i++) {
     roots[i] = std::pow(r_0, i); // Make initial guess for each root different
                                  // (and not too close to each other)

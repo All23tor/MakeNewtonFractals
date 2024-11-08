@@ -1,20 +1,22 @@
 #include "Color.hpp"
 #include <cmath>
 
-Color::Color() { // Defaults to black
+//Black
+Color::Color() {
   R = 0;
   G = 0;
   B = 0;
 }
 
-Color::Color(unsigned char r, unsigned char g,
-             unsigned char b) { // Initializes RGB values (0-255)
+// Initializes RGB values (0-255)
+Color::Color(unsigned char r, unsigned char g, unsigned char b) { 
   R = r;
   G = g;
   B = b;
 }
 
-Color::Color(double hue) { // Pick by hue [0, 360)
+// Pick by hue [0, 360)
+Color::Color(double hue) {
   unsigned char x = 255 * (1 - std::abs(std::fmod(hue / 60, 2) - 1));
   switch (int(hue) / 60) {
   case 0:
@@ -61,12 +63,13 @@ Color::Color(double hue) { // Pick by hue [0, 360)
   }
 }
 
-Color Color::scale(
-    double value) { // Returns copy of color scaled by decimal value
+// Returns copy of color scaled by decimal value
+Color Color::scale(double value) { 
   return Color(R * value, G * value, B * value);
 }
 
-unsigned int Color::toUInt() { // Returns the pointer that the RGBA stores
+// Returns the pointer that the RGBA stores
+unsigned int Color::toUInt() { 
   unsigned int color = R + ((unsigned int)G << 8) + ((unsigned int)B << 16);
   return color;
 }

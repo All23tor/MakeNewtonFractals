@@ -2,16 +2,12 @@
 #include <iostream>
 
 int main() {
-  std::cout << "Make a Newton Fractal!" << '\n'
-            << "Enter the polynomials degree: ";
-  int m;
-  std::cin >> m;
-  m++;
+  std::cout << "Make a Newton Fractal!\nEnter the polynomials degree: ";
+  int m; std::cin >> m; m++;
 
-  std::cout << "Now enter each term's coefficients (from the constant to the "
-               "leading): ";
-  std::vector<std::complex<double>> polynomial_coefficients(m, 0);
-  for (std::complex<double> &i : polynomial_coefficients) {
+  std::cout << "Now enter each term's coefficients (highest degree last): ";
+  ComplexVector polynomial_coefficients(m);
+  for (std::complex<double>& i : polynomial_coefficients) {
     std::cin >> i;
   }
 

@@ -1,24 +1,24 @@
 #include <complex>
 #include <vector>
 
-typedef std::vector<std::complex<double>> Polynomial;
-class ComplexPolynomial {
+typedef std::vector<std::complex<double>> ComplexVector;
 
+class ComplexPolynomial {
 private:
-  Polynomial coefficients;
+  ComplexVector coefficients;
   int degree;
 
 private:
   void simplify();
-  Polynomial durandkernerStep(Polynomial);
+  ComplexVector durandkernerStep(ComplexVector);
 
 public:
   ComplexPolynomial();
-  ComplexPolynomial(Polynomial);
+  ComplexPolynomial(ComplexVector, bool normalize = false);
 
   void normalize();
   std::string to_String();
   std::complex<double> evaluate(std::complex<double>);
   ComplexPolynomial derivative();
-  Polynomial findroots();
+  ComplexVector findroots();
 };
