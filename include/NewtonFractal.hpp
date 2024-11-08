@@ -25,6 +25,7 @@ public:
   void makeBMP(const std::string &filename, int pixel_width = 1600, int pixel_height = 900, double x_range = 5.0);
   const ComplexPolynomial& getPolynomial() { return polynomial; }
   const ComplexVector& getRoots() { return roots; }
+  const std::vector<Color>& getColors() { return colors; }
   void setColors(const std::vector<Color>&);
 };
 

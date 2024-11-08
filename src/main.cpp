@@ -1,5 +1,7 @@
 #include "NewtonFractal.hpp"
 #include <iostream>
+#include <numeric>
+#include <algorithm>
 
 int main() {
   std::cout << "Make a Newton Fractal!\nEnter the polynomials degree: ";
@@ -33,6 +35,18 @@ int main() {
       color = Color(r, g, b);
     }
     newtonFractal.setColors(newColors);
+  } else {
+    const std::vector<Color>& colors = newtonFractal.getColors();
+    std::vector<std::size_t> sortedIndices(colors.size());
+    std::iota(sortedIndices.begin(), sortedIndices.end(), 0);
+    std::sort(sortedIndices.begin(), sortedIndices.end(), 
+      [roots = newtonFractal.getRoots()] (std::size_t i, std::size_t j) { 
+        return std::arg(roots[i]) < std::arg(roots[j]); 
+      }
+    );
+    std::vector<Color> sortedColors(colors.size());
+    for (std::size_t i = 0; i < sortedIndices.size(); ++i) sortedColors[sortedIndices[i]] = colors[i];
+    newtonFractal.setColors(sortedColors);
   }
 
   std::cout << "Assignation done!" << '\n';
