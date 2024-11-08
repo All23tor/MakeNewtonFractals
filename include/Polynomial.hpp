@@ -4,21 +4,20 @@
 typedef std::vector<std::complex<double>> ComplexVector;
 
 class ComplexPolynomial {
-private:
+public:
   ComplexVector coefficients;
-  int degree;
-
-private:
-  void simplify();
-  ComplexVector durandkernerStep(ComplexVector);
 
 public:
   ComplexPolynomial();
-  ComplexPolynomial(ComplexVector, bool normalize = false);
-
+  ComplexPolynomial(const ComplexVector&, bool normalize = false);
+  void simplify();
   void normalize();
-  std::string to_String();
-  std::complex<double> evaluate(std::complex<double>);
-  ComplexPolynomial derivative();
-  ComplexVector findroots();
+  std::size_t degree() const;
+  std::string toString() const;
+  std::complex<double> evaluate(const std::complex<double>&) const;
+  ComplexPolynomial derivative() const;
+  ComplexVector findroots() const;
+  
+private:
+  ComplexVector durandkernerStep(const ComplexVector&) const;
 };
