@@ -41,7 +41,7 @@ static constexpr double map(double value, double input_start, double input_end, 
 }
 
 void NewtonFractal::makeBMP(const std::string &filename, int pixel_width, int pixel_height, double x_range) { // Store image in a file
-  BMP bmp((filename + ".bmp").data(), pixel_width, pixel_height);
+  BMP bmp(filename + ".bmp", pixel_width, pixel_height);
 
   // We will calculate the numerical coordinates that each pixel represents ahead of time
   std::vector<double> real_axis, imaginary_axis;
