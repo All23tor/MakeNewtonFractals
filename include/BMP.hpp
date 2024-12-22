@@ -2,20 +2,16 @@
 #include <fstream>
 #include <bit>
 #include <array>
+#include <cstdint>
 
 class BMP {
 private:
   std::ofstream fout;
-  const signed int pixel_width;
-  const signed int pixel_height;
-
-  template<typename T>
-  void writeBytes(T value) {
-    auto bytes = std::bit_cast<std::array<char, sizeof(T)>>(value);
-    fout.write(bytes.data(), sizeof(T));
-  }
+  const std::int32_t pixel_width;
+  const std::int32_t pixel_height;
+  template<typename T> void writeBytes(T value);
 
 public:
-  BMP(const std::string& name, int width, int height);
+  BMP(const std::string& name, std::int32_t width, std::int32_t height);
   void writeColor(Color);
 };
