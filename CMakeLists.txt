@@ -9,7 +9,7 @@ set(SOURCES
   ./src/BMP.cpp
   ./src/Polynomial.cpp
   ./src/NewtonFractal.cpp
-  ./src/main.cpp
+  ./main.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
