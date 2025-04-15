@@ -13,7 +13,8 @@ private:
   // Measures how quickly colors turn to black
   static constexpr double eccentricity = 0.3;
   static constexpr int maxNewtonIterations = 200;
-  static constexpr float invmaxItEx = 1.0 / (maxNewtonIterations * eccentricity);
+  static constexpr float invmaxItEx =
+      1.0 / (maxNewtonIterations * eccentricity);
   static constexpr double tolerance = 1.0E-6;
 
 private:
@@ -21,11 +22,18 @@ private:
   Color printableColor(double x, double y);
 
 public:
-  NewtonFractal(const std::vector<std::complex<double>> &_coefficients);
-  void makeBMP(const std::string &filename, int pixel_width = 1600, int pixel_height = 900, double x_range = 5.0);
-  const ComplexPolynomial& getPolynomial() { return polynomial; }
-  const ComplexVector& getRoots() { return roots; }
-  const std::vector<Color>& getColors() { return colors; }
+  NewtonFractal(const std::vector<std::complex<double>>& _coefficients);
+  void makeBMP(const std::string& filename, int pixel_width = 1600,
+               int pixel_height = 900, double x_range = 5.0);
+  const ComplexPolynomial& getPolynomial() {
+    return polynomial;
+  }
+  const ComplexVector& getRoots() {
+    return roots;
+  }
+  const std::vector<Color>& getColors() {
+    return colors;
+  }
   void setColors(const std::vector<Color>&);
 };
 

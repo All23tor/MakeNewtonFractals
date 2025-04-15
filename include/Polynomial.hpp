@@ -17,7 +17,7 @@ public:
   std::complex<double> evaluate(const std::complex<double>&) const;
   ComplexPolynomial derivative() const;
   ComplexVector findroots() const;
-  
+
 private:
   ComplexVector durandkernerStep(const ComplexVector&) const;
 };

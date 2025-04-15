@@ -8,7 +8,8 @@ Color NewtonFractal::printableColor(double x, double y) {
     for (int k = 0; k < roots.size(); k++) { // This is reaaaaally slow
       if (norm(z - roots[k]) < tolerance) {
         // Scale the color such that it fades to black appropiately
-        return colors[k].scale((1.0 + invmaxItEx) / (it * eccentricity + 1) - invmaxItEx);
+        return colors[k].scale((1.0 + invmaxItEx) / (it * eccentricity + 1) -
+                               invmaxItEx);
       }
     }
   }
@@ -27,29 +28,33 @@ std::vector<Color> evenlyspacedColors(int n) {
   return resulting_colors;
 }
 
-NewtonFractal::NewtonFractal(const std::vector<std::complex<double>> &_coefficients) : 
-  polynomial(_coefficients, true),
-  derivative(polynomial.derivative()),
-  roots(polynomial.findroots()),
-  colors(evenlyspacedColors(roots.size()))
-{}
+NewtonFractal::NewtonFractal(
+    const std::vector<std::complex<double>>& _coefficients) :
+    polynomial(_coefficients, true),
+    derivative(polynomial.derivative()),
+    roots(polynomial.findroots()),
+    colors(evenlyspacedColors(roots.size())) {}
 
-static constexpr double map(double value, double input_start, double input_end, double output_start, double output_end) {
+static constexpr double map(double value, double input_start, double input_end,
+                            double output_start, double output_end) {
   double input_range = input_end - input_start;
   double output_range = output_end - output_start;
   return (value - input_start) * (output_range / input_range) + output_start;
 }
 
-void NewtonFractal::makeBMP(const std::string &filename, int pixel_width, int pixel_height, double x_range) { // Store image in a file
+void NewtonFractal::makeBMP(const std::string& filename, int pixel_width,
+                            int pixel_height,
+                            double x_range) { // Store image in a file
   BMP bmp(filename + ".bmp", pixel_width, pixel_height);
 
-  // We will calculate the numerical coordinates that each pixel represents ahead of time
+  // We will calculate the numerical coordinates that each pixel represents
+  // ahead of time
   std::vector<double> real_axis, imaginary_axis;
   const double aspect_ratio = static_cast<double>(pixel_height) / pixel_width;
   const double y_range = aspect_ratio * x_range;
 
   // Pixels to xy plane translation
-  for (int i = 0; i < pixel_width; i++) { 
+  for (int i = 0; i < pixel_width; i++) {
     real_axis.push_back(map(i, 0, pixel_width, -x_range, x_range));
   }
   for (int j = 0; j < pixel_height; j++) {
@@ -64,12 +69,13 @@ void NewtonFractal::makeBMP(const std::string &filename, int pixel_width, int pi
 }
 
 void NewtonFractal::setColors(const std::vector<Color>& newColors) {
-  const std::size_t numberOfColorsToAssign = std::min(newColors.size(), colors.size());
-  for (int i=0; i<numberOfColorsToAssign; ++i) {
+  const std::size_t numberOfColorsToAssign =
+      std::min(newColors.size(), colors.size());
+  for (int i = 0; i < numberOfColorsToAssign; ++i) {
     colors[i] = newColors[i];
   }
 
-  for (int i=numberOfColorsToAssign; i<colors.size(); ++i) {
+  for (int i = numberOfColorsToAssign; i < colors.size(); ++i) {
     colors[i] = Color();
   }
 }

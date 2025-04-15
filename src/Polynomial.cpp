@@ -12,10 +12,11 @@ void ComplexPolynomial::simplify() {
   }
 }
 
-ComplexVector ComplexPolynomial::durandkernerStep(const ComplexVector &roots) const {
+ComplexVector
+ComplexPolynomial::durandkernerStep(const ComplexVector& roots) const {
   ComplexVector newroots(degree());
   // All of the roots must be calculated at once, i think
-  for (int index = 0; index < degree(); index++) { 
+  for (int index = 0; index < degree(); index++) {
     std::complex<double> currentvalue = roots[index];
     std::complex<double> newvalue = 1;
     for (int i = 0; i < index; i++) {
@@ -30,16 +31,19 @@ ComplexVector ComplexPolynomial::durandkernerStep(const ComplexVector &roots) co
 }
 
 // Zero Polynomial
-ComplexPolynomial::ComplexPolynomial() { 
+ComplexPolynomial::ComplexPolynomial() {
   coefficients = ComplexVector(1, 0);
 }
 
-ComplexPolynomial::ComplexPolynomial(const ComplexVector &poly, bool shouldNormalize): coefficients(poly) {
+ComplexPolynomial::ComplexPolynomial(const ComplexVector& poly,
+                                     bool shouldNormalize) :
+    coefficients(poly) {
   if (poly.size() == 0) {
     coefficients.push_back(0);
-    return;  
+    return;
   }
-  if (shouldNormalize) this->normalize();
+  if (shouldNormalize)
+    this->normalize();
 }
 
 void ComplexPolynomial::normalize() {
@@ -59,7 +63,8 @@ std::string ComplexPolynomial::toString() const {
   return text.str();
 }
 
-std::complex<double> ComplexPolynomial::evaluate(const std::complex<double> &z) const {
+std::complex<double>
+ComplexPolynomial::evaluate(const std::complex<double>& z) const {
   std::complex<double> ans = 0;
   for (int i = degree(); i >= 0; i--) { // Horner's method
     ans *= z;
