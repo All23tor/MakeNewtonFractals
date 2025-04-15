@@ -25,15 +25,9 @@ public:
   NewtonFractal(const std::vector<std::complex<double>>& _coefficients);
   void makeBMP(const std::string& filename, int pixel_width = 1600,
                int pixel_height = 900, double x_range = 5.0);
-  const ComplexPolynomial& getPolynomial() {
-    return polynomial;
-  }
-  const ComplexVector& getRoots() {
-    return roots;
-  }
-  const std::vector<Color>& getColors() {
-    return colors;
-  }
+  const ComplexPolynomial& getPolynomial() const;
+  const ComplexVector& getRoots() const;
+  const std::vector<Color>& getColors() const;
   void setColors(const std::vector<Color>&);
 };
 

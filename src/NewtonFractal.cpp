@@ -79,3 +79,15 @@ void NewtonFractal::setColors(const std::vector<Color>& newColors) {
     colors[i] = Color();
   }
 }
+
+const ComplexPolynomial& NewtonFractal::getPolynomial() const {
+  return polynomial;
+}
+
+const ComplexVector& NewtonFractal::getRoots() const {
+  return roots;
+}
+
+const std::vector<Color>& NewtonFractal::getColors() const {
+  return colors;
+}
