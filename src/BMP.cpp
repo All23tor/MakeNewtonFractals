@@ -2,20 +2,16 @@
 #include <array>
 #include <bit>
 
-template <typename T>
-void BMP::writeBytes(T value) {
-  if constexpr (std::endian::native == std::endian::big) {
-    value = std::byteswap(value);
-  }
-
-  auto bytes = std::bit_cast<std::array<char, sizeof(T)>>(value);
-  fout.write(bytes.data(), sizeof(T));
-}
-
 BMP::BMP(const std::string& name, std::int32_t width, std::int32_t height) :
-    fout(name, std::ios::binary),
-    pixel_width(width),
-    pixel_height(height) {
+  fout(name, std::ios::binary),
+  pixel_width{width},
+  pixel_height{height} {
+  auto writeBytes = [&fout = this->fout]<std::integral T>(T value) {
+    if constexpr (std::endian::native == std::endian::big)
+      value = std::byteswap(value);
+    auto bytes = std::bit_cast<std::array<char, sizeof(T)>>(value);
+    fout.write(bytes.data(), sizeof(T));
+  };
 
   static constexpr const char* signature = "BM";
   static constexpr std::uint32_t size_of_header = 14;
@@ -33,8 +29,8 @@ BMP::BMP(const std::string& name, std::int32_t width, std::int32_t height) :
 
   const std::uint32_t size_data = bytes_per_pixel * width * height;
   const std::uint32_t size_of_bmp = size_data + offset;
-  // Header
 
+  // Header
   fout.write(signature, 2);
   writeBytes(size_of_bmp);
   writeBytes(unused_bytes);
