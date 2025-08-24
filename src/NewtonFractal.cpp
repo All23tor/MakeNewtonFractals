@@ -1,20 +1,24 @@
 #include "NewtonFractal.hpp"
 
+static constexpr int MAX_ITERATION = 200;
+static constexpr double ECCENTRICITY = 3;
+
+constexpr double scaling_factor(double x) {
+  return (1 - x / MAX_ITERATION) / (1 + x / ECCENTRICITY);
+}
+
 Color NewtonFractal::printableColor(double x, double y) {
   std::complex<double> z(x, y);
 
-  for (int it = 0; it < maxNewtonIterations; it++) {
+  for (int it = 0; it < MAX_ITERATION; it++) {
     z -= polynomial.evaluate(z) / derivative.evaluate(z);
-    for (int k = 0; k < roots.size(); k++) { // This is reaaaaally slow
-      if (norm(z - roots[k]) < tolerance) {
-        // Scale the color such that it fades to black appropiately
-        return colors[k].scale((1.0 + invmaxItEx) / (it * eccentricity + 1) -
-                               invmaxItEx);
-      }
-    }
+    static constexpr double tolerance = 1.0E-6;
+    for (int k = 0; k < roots.size(); k++) // This is reaaaaally slow
+      if (norm(z - roots[k]) < tolerance)
+        return colors[k].scale(scaling_factor(it));
   }
 
-  return Color();
+  return Color{};
 }
 
 std::vector<Color> evenlyspacedColors(int n) {

@@ -3,21 +3,11 @@
 
 // Builds a Newton Fractal pixel by pixel given a polynomial;
 class NewtonFractal {
-private:
   const ComplexPolynomial polynomial;
   const ComplexPolynomial derivative;
   const std::vector<std::complex<double>> roots;
   std::vector<Color> colors;
 
-private:
-  // Measures how quickly colors turn to black
-  static constexpr double eccentricity = 0.3;
-  static constexpr int maxNewtonIterations = 200;
-  static constexpr float invmaxItEx =
-      1.0 / (maxNewtonIterations * eccentricity);
-  static constexpr double tolerance = 1.0E-6;
-
-private:
   // This checks which root each point is closest to, then assigns it a color
   Color printableColor(double x, double y);
 
