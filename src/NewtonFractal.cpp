@@ -22,18 +22,18 @@ std::vector<Color> evenlyspacedColors(int n) {
   double base_hue = 360.0 / n;
   double hue = 0.0;
   for (int i = 0; i < n; ++i) {
-    resulting_colors.push_back(Color(hue));
+    resulting_colors.push_back(Color::from_hue(hue));
     hue += base_hue;
   }
   return resulting_colors;
 }
 
 NewtonFractal::NewtonFractal(
-    const std::vector<std::complex<double>>& _coefficients) :
-    polynomial(_coefficients, true),
-    derivative(polynomial.derivative()),
-    roots(polynomial.findroots()),
-    colors(evenlyspacedColors(roots.size())) {}
+  const std::vector<std::complex<double>>& _coefficients) :
+  polynomial(_coefficients, true),
+  derivative(polynomial.derivative()),
+  roots(polynomial.findroots()),
+  colors(evenlyspacedColors(roots.size())) {}
 
 static constexpr double map(double value, double input_start, double input_end,
                             double output_start, double output_end) {
@@ -70,7 +70,7 @@ void NewtonFractal::makeBMP(const std::string& filename, int pixel_width,
 
 void NewtonFractal::setColors(const std::vector<Color>& newColors) {
   const std::size_t numberOfColorsToAssign =
-      std::min(newColors.size(), colors.size());
+    std::min(newColors.size(), colors.size());
   for (int i = 0; i < numberOfColorsToAssign; ++i) {
     colors[i] = newColors[i];
   }

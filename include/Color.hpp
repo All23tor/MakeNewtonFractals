@@ -3,7 +3,6 @@ struct Color {
   unsigned char G;
   unsigned char B;
 
-  Color(unsigned char r = 0, unsigned char g = 0, unsigned char b = 0);
-  Color(double hue);
+  static Color from_hue(double hue);
   Color scale(double value) const;
 };
