@@ -1,24 +1,23 @@
 #include "Polynomial.hpp"
 
-std::size_t ComplexPolynomial::degree() const {
+std::size_t Polynomial::degree() const {
   return coefficients.size() - 1;
 }
 
 // Used to remove all zero terms at the end of the polynomials representation
-void ComplexPolynomial::simplify() {
-  if (coefficients[degree()] == std::complex<double>(0, 0)) {
+void Polynomial::simplify() {
+  if (coefficients[degree()] == 0.0) {
     coefficients.pop_back();
     simplify();
   }
 }
 
-ComplexVector
-ComplexPolynomial::durandkernerStep(const ComplexVector& roots) const {
+ComplexVector Polynomial::durandkernerStep(const ComplexVector& roots) const {
   ComplexVector newroots(degree());
   // All of the roots must be calculated at once, i think
   for (int index = 0; index < degree(); index++) {
-    std::complex<double> currentvalue = roots[index];
-    std::complex<double> newvalue = 1;
+    Complex currentvalue = roots[index];
+    Complex newvalue = 1;
     for (int i = 0; i < index; i++) {
       newvalue *= currentvalue - roots[i];
     }
@@ -31,13 +30,12 @@ ComplexPolynomial::durandkernerStep(const ComplexVector& roots) const {
 }
 
 // Zero Polynomial
-ComplexPolynomial::ComplexPolynomial() {
+Polynomial::Polynomial() {
   coefficients = ComplexVector(1, 0);
 }
 
-ComplexPolynomial::ComplexPolynomial(const ComplexVector& poly,
-                                     bool shouldNormalize) :
-    coefficients(poly) {
+Polynomial::Polynomial(const ComplexVector& poly, bool shouldNormalize) :
+  coefficients(poly) {
   if (poly.size() == 0) {
     coefficients.push_back(0);
     return;
@@ -46,7 +44,7 @@ ComplexPolynomial::ComplexPolynomial(const ComplexVector& poly,
     this->normalize();
 }
 
-void ComplexPolynomial::normalize() {
+void Polynomial::normalize() {
   simplify();
   for (int i = 0; i < degree(); i++) {
     coefficients[i] /= coefficients[degree()];
@@ -54,7 +52,7 @@ void ComplexPolynomial::normalize() {
   coefficients[degree()] = 1;
 }
 
-std::string ComplexPolynomial::toString() const {
+std::string Polynomial::toString() const {
   std::stringstream text;
   for (int i = 0; i < degree(); i++) {
     text << coefficients[i] << "x^" << i << " + ";
@@ -63,9 +61,8 @@ std::string ComplexPolynomial::toString() const {
   return text.str();
 }
 
-std::complex<double>
-ComplexPolynomial::evaluate(const std::complex<double>& z) const {
-  std::complex<double> ans = 0;
+Complex Polynomial::evaluate(const Complex& z) const {
+  Complex ans = 0;
   for (int i = degree(); i >= 0; i--) { // Horner's method
     ans *= z;
     ans += coefficients[i];
@@ -73,16 +70,16 @@ ComplexPolynomial::evaluate(const std::complex<double>& z) const {
   return ans;
 }
 
-ComplexPolynomial ComplexPolynomial::derivative() const {
+Polynomial Polynomial::derivative() const {
   ComplexVector newrule(degree());
   for (int i = 0; i < degree(); i++) {
     newrule[i] = coefficients[i + 1] * (i + 1.0); // Chain rule
   }
-  return ComplexPolynomial(newrule);
+  return Polynomial(newrule);
 }
 
-ComplexVector ComplexPolynomial::findroots() const {
-  std::complex<double> r_0 = std::complex<double>(0.4, 0.9);
+ComplexVector Polynomial::findroots() const {
+  Complex r_0(0.4, 0.9);
   ComplexVector roots(degree());
   for (int i = 0; i < degree(); i++) {
     roots[i] = std::pow(r_0, i); // Make initial guess for each root different

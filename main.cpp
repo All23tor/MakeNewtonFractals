@@ -11,14 +11,14 @@ int main() {
 
   std::cout << "Now enter each term's coefficients (highest degree last): ";
   ComplexVector polynomial_coefficients(m);
-  for (std::complex<double>& i : polynomial_coefficients) {
+  for (Complex& i : polynomial_coefficients) {
     std::cin >> i;
   }
 
   NewtonFractal newtonFractal(polynomial_coefficients);
 
   std::cout << "Roots: ";
-  for (std::complex<double> root : newtonFractal.getRoots()) {
+  for (Complex root : newtonFractal.getRoots()) {
     std::cout << root << ' ';
   }
   std::cout << '\n';

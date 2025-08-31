@@ -8,7 +8,7 @@ constexpr double scaling_factor(double x) {
 }
 
 Color NewtonFractal::printableColor(double x, double y) {
-  std::complex<double> z(x, y);
+  Complex z(x, y);
 
   for (int it = 0; it < MAX_ITERATION; it++) {
     z -= polynomial.evaluate(z) / derivative.evaluate(z);
@@ -32,8 +32,7 @@ std::vector<Color> evenlyspacedColors(int n) {
   return resulting_colors;
 }
 
-NewtonFractal::NewtonFractal(
-  const std::vector<std::complex<double>>& _coefficients) :
+NewtonFractal::NewtonFractal(const ComplexVector& _coefficients) :
   polynomial(_coefficients, true),
   derivative(polynomial.derivative()),
   roots(polynomial.findroots()),

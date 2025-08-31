@@ -3,19 +3,19 @@
 
 // Builds a Newton Fractal pixel by pixel given a polynomial;
 class NewtonFractal {
-  const ComplexPolynomial polynomial;
-  const ComplexPolynomial derivative;
-  const std::vector<std::complex<double>> roots;
+  const Polynomial polynomial;
+  const Polynomial derivative;
+  const ComplexVector roots;
   std::vector<Color> colors;
 
   // This checks which root each point is closest to, then assigns it a color
   Color printableColor(double x, double y);
 
 public:
-  NewtonFractal(const std::vector<std::complex<double>>& _coefficients);
+  NewtonFractal(const ComplexVector& _coefficients);
   void makeBMP(const std::string& filename, int pixel_width = 1600,
                int pixel_height = 900, double x_range = 5.0);
-  const ComplexPolynomial& getPolynomial() const;
+  const Polynomial& getPolynomial() const;
   const ComplexVector& getRoots() const;
   const std::vector<Color>& getColors() const;
   void setColors(const std::vector<Color>&);
