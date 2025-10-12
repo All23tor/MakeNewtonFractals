@@ -42,10 +42,13 @@ int main() {
     const std::vector<Color>& colors = newtonFractal.getColors();
     std::vector<std::size_t> sortedIndices(colors.size());
     std::iota(sortedIndices.begin(), sortedIndices.end(), 0);
-    std::sort(sortedIndices.begin(), sortedIndices.end(),
-              [roots = newtonFractal.getRoots()](std::size_t i, std::size_t j) {
-                return std::arg(roots[i]) < std::arg(roots[j]);
-              });
+    std::sort(
+      sortedIndices.begin(),
+      sortedIndices.end(),
+      [roots = newtonFractal.getRoots()](std::size_t i, std::size_t j) {
+        return std::arg(roots[i]) < std::arg(roots[j]);
+      }
+    );
     std::vector<Color> sortedColors(colors.size());
     for (std::size_t i = 0; i < sortedIndices.size(); ++i)
       sortedColors[sortedIndices[i]] = colors[i];
@@ -53,7 +56,7 @@ int main() {
   }
 
   std::cout << "Assignation done!" << '\n';
-  std::cout << newtonFractal.getPolynomial().toString() << '\n';
+  std::cout << newtonFractal.getPolynomial() << '\n';
 
   std::cout << "Insert file name: ";
   std::string name;

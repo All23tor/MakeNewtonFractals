@@ -4,15 +4,6 @@ std::size_t Polynomial::degree() const {
   return coefficients.size() - 1;
 }
 
-// Used to remove all zero terms at the end of the polynomials representation
-void Polynomial::simplify() {
-  if (coefficients[degree()] == 0.0) {
-    coefficients.pop_back();
-    simplify();
-  }
-}
-
-// Zero Polynomial
 Polynomial::Polynomial() {
   coefficients = ComplexVector(1, 0);
 }
@@ -24,24 +15,22 @@ Polynomial::Polynomial(const ComplexVector& poly, bool shouldNormalize) :
     return;
   }
   if (shouldNormalize)
-    this->normalize();
+    normalize();
 }
 
 void Polynomial::normalize() {
-  simplify();
-  for (int i = 0; i < degree(); i++) {
-    coefficients[i] /= coefficients[degree()];
-  }
-  coefficients[degree()] = 1;
+  while (coefficients.back() == 0.0)
+    coefficients.pop_back();
+
+  for (auto& coefficient : coefficients)
+    coefficient /= coefficients.back();
 }
 
-std::string Polynomial::toString() const {
-  std::stringstream text;
-  for (int i = 0; i < degree(); i++) {
-    text << coefficients[i] << "x^" << i << " + ";
-  }
-  text << coefficients[degree()] << "x^" << degree();
-  return text.str();
+std::ostream& operator<<(std::ostream& os, const Polynomial& p) {
+  for (int i = 0; i < p.degree(); i++)
+    os << p.coefficients[i] << "x^" << i << " + ";
+  os << p.coefficients.back() << "x^" << p.degree();
+  return os;
 }
 
 Complex Polynomial::evaluate(const Complex& z) const {
