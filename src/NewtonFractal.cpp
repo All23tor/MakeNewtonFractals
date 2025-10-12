@@ -33,7 +33,7 @@ std::vector<Color> evenlyspacedColors(int n) {
 }
 
 NewtonFractal::NewtonFractal(const ComplexVector& _coefficients) :
-  polynomial(_coefficients, true),
+  polynomial(Polynomial(_coefficients).normalized()),
   derivative(polynomial.derivative()),
   roots(polynomial.findroots()),
   colors(evenlyspacedColors(roots.size())) {}

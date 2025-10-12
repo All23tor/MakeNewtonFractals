@@ -8,22 +8,18 @@ Polynomial::Polynomial() {
   coefficients = ComplexVector(1, 0);
 }
 
-Polynomial::Polynomial(const ComplexVector& poly, bool shouldNormalize) :
-  coefficients(poly) {
-  if (poly.size() == 0) {
+Polynomial::Polynomial(const ComplexVector& poly) : coefficients(poly) {
+  if (poly.size() == 0)
     coefficients.push_back(0);
-    return;
-  }
-  if (shouldNormalize)
-    normalize();
-}
-
-void Polynomial::normalize() {
   while (coefficients.back() == 0.0)
     coefficients.pop_back();
+}
 
-  for (auto& coefficient : coefficients)
+Polynomial Polynomial::normalized() const {
+  ComplexVector new_coefficients = coefficients;
+  for (auto& coefficient : new_coefficients)
     coefficient /= coefficients.back();
+  return Polynomial(new_coefficients);
 }
 
 std::ostream& operator<<(std::ostream& os, const Polynomial& p) {
