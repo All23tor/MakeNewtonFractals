@@ -38,16 +38,24 @@ NewtonFractal::NewtonFractal(const ComplexVector& _coefficients) :
   roots(polynomial.findroots()),
   colors(evenlyspacedColors(roots.size())) {}
 
-static constexpr double map(double value, double input_start, double input_end,
-                            double output_start, double output_end) {
+static constexpr double map(
+  double value,
+  double input_start,
+  double input_end,
+  double output_start,
+  double output_end
+) {
   double input_range = input_end - input_start;
   double output_range = output_end - output_start;
   return (value - input_start) * (output_range / input_range) + output_start;
 }
 
-void NewtonFractal::makeBMP(const std::string& filename, int pixel_width,
-                            int pixel_height,
-                            double x_range) { // Store image in a file
+void NewtonFractal::makeBMP(
+  const std::string& filename,
+  int pixel_width,
+  int pixel_height,
+  double x_range
+) { // Store image in a file
   BMP bmp(filename + ".bmp", pixel_width, pixel_height);
 
   // We will calculate the numerical coordinates that each pixel represents
@@ -83,7 +91,7 @@ void NewtonFractal::setColors(const std::vector<Color>& newColors) {
   }
 }
 
-const ComplexPolynomial& NewtonFractal::getPolynomial() const {
+const Polynomial& NewtonFractal::getPolynomial() const {
   return polynomial;
 }
 

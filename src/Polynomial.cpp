@@ -12,23 +12,6 @@ void Polynomial::simplify() {
   }
 }
 
-ComplexVector Polynomial::durandkernerStep(const ComplexVector& roots) const {
-  ComplexVector newroots(degree());
-  // All of the roots must be calculated at once, i think
-  for (int index = 0; index < degree(); index++) {
-    Complex currentvalue = roots[index];
-    Complex newvalue = 1;
-    for (int i = 0; i < index; i++) {
-      newvalue *= currentvalue - roots[i];
-    }
-    for (int i = index + 1; i < degree(); i++) {
-      newvalue *= currentvalue - roots[i];
-    }
-    newroots[index] = currentvalue - (evaluate(currentvalue) / newvalue);
-  }
-  return newroots;
-}
-
 // Zero Polynomial
 Polynomial::Polynomial() {
   coefficients = ComplexVector(1, 0);
@@ -78,6 +61,24 @@ Polynomial Polynomial::derivative() const {
   return Polynomial(newrule);
 }
 
+static ComplexVector
+durand_kerner(const Polynomial& p, const ComplexVector& r) {
+  ComplexVector newroots(p.degree());
+  // All of the roots must be calculated at once, i think
+  for (int index = 0; index < p.degree(); index++) {
+    Complex currentvalue = r[index];
+    Complex newvalue = 1;
+
+    for (int i = 0; i < index; i++)
+      newvalue *= currentvalue - r[i];
+    for (int i = index + 1; i < p.degree(); i++)
+      newvalue *= currentvalue - r[i];
+
+    newroots[index] = currentvalue - (p.evaluate(currentvalue) / newvalue);
+  }
+  return newroots;
+}
+
 ComplexVector Polynomial::findroots() const {
   Complex r_0(0.4, 0.9);
   ComplexVector roots(degree());
@@ -87,7 +88,7 @@ ComplexVector Polynomial::findroots() const {
   }
   for (int i = 0; i < 60; i++) { // Magic number 60 chosen because it seemed
                                  // to be enough, not sure
-    roots = durandkernerStep(roots);
+    roots = durand_kerner(*this, roots);
   }
   return roots;
 }

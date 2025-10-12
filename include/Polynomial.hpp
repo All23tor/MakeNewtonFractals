@@ -5,7 +5,6 @@ using Complex = std::complex<double>;
 using ComplexVector = std::vector<Complex>;
 
 class Polynomial {
-public:
   ComplexVector coefficients;
 
 public:
@@ -18,7 +17,4 @@ public:
   Complex evaluate(const Complex&) const;
   Polynomial derivative() const;
   ComplexVector findroots() const;
-
-private:
-  ComplexVector durandkernerStep(const ComplexVector&) const;
 };
