@@ -21,7 +21,7 @@ Color NewtonFractal::printableColor(double x, double y) {
   return Color{};
 }
 
-std::vector<Color> evenlyspacedColors(int n) {
+static std::vector<Color> evenlyspacedColors(int n) {
   std::vector<Color> resulting_colors;
   double base_hue = 360.0 / n;
   double hue = 0.0;

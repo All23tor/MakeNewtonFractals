@@ -13,12 +13,14 @@ class NewtonFractal {
 
 public:
   NewtonFractal(const ComplexVector& _coefficients);
-  void makeBMP(const std::string& filename, int pixel_width = 1600,
-               int pixel_height = 900, double x_range = 5.0);
+  void makeBMP(
+    const std::string& filename,
+    int pixel_width = 1600,
+    int pixel_height = 900,
+    double x_range = 5.0
+  );
   const Polynomial& getPolynomial() const;
   const ComplexVector& getRoots() const;
   const std::vector<Color>& getColors() const;
   void setColors(const std::vector<Color>&);
 };
-
-std::vector<Color> evenlyspacedColors(int n);
